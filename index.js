@@ -1,15 +1,15 @@
 require('dotenv').config(); // sets up .env environment variables
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
 
-app.use(bodyParser.json()); // using bodyParser to parse JSON bodies into JS objects
+
 app.use(cors()); // enable cross-origin resource sharing
 
-app.use(express.json()); // Is this doubling up? because of body parser? Mosh used this
+app.use(express.json()); // parse JSON bodies into JS objects. Is this doubling up? because of body parser? Mosh used this
+// Chris: looks like bodyParser has been built-in to Express as of version 4.16+, so no need for that extra package :thumbsup:
 app.use('/api/seasons', require('./routes/api/seasons'));
 app.use('/api/teams', require('./routes/api/teams'));
 app.use('/api/players', require('./routes/api/players'));
