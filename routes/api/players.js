@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  // return list of teams
+  // return list of all players
 });
 
 router.get('/:id', async (req, res) => {
-  // return team with id, current and past players
+  //   return player with id, current and past team, frames played, and other relevant info
 });
