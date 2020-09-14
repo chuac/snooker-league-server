@@ -1,6 +1,8 @@
+-- https://www.postgresql.org/docs/8.1sql-keywords-appendix.html
+
 --\c snooker_league -- connect to snooker_league database
 
-DROP TABLE IF EXISTS players, teams, matches, frames; -- drop "old" tables to create fresh ones again
+DROP TABLE IF EXISTS players, teams, locations, matches, frames; -- drop "old" tables to create fresh ones again
 
 CREATE TABLE players (
     player_id SERIAL PRIMARY KEY,
@@ -11,9 +13,16 @@ CREATE TABLE players (
 CREATE TABLE teams (
 	team_id SERIAL PRIMARY KEY,
 	team_name VARCHAR (255) NOT NULL,
+    home_id INTEGER NOT NULL, -- home location (id) for this team
 	year INT NOT NULL -- for which year/season does this team belong to?
--- 	FOREIGN KEY (year)
--- 		REFERENCES years (year)
+    FOREIGN KEY (home_id)
+        REFERENCES locations (location_id)
+);
+
+CREATE TABLE locations (
+    location_id SERIAL PRIMARY KEY,
+    location_name VARCHAR (255) NOT NULL,
+    abbreviation VARCHAR (10)
 );
 
 -- CREATE TABLE years ( -- do we need a years table? why not just reference a year in each relation?
@@ -24,11 +33,11 @@ CREATE TABLE teams (
 CREATE TABLE matches (
 	match_id SERIAL PRIMARY KEY,
 	match_date DATE NOT NULL,
-	home_team INTEGER NOT NULL,
-	away_team INTEGER NOT NULL,
-	FOREIGN KEY (home_team)
+	home_team_id INTEGER NOT NULL,
+	away_team_id INTEGER NOT NULL,
+	FOREIGN KEY (home_team_id)
 		REFERENCES teams (team_id),
-	FOREIGN KEY (away_team)
+	FOREIGN KEY (away_team_id)
 		REFERENCES teams (team_id)
 );
 
