@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS players, teams, locations, matches, frames; -- drop "old" t
 
 CREATE TABLE players (
     player_id SERIAL PRIMARY KEY,
-    player_name VARCHAR (255) NOT NULL,
+    player_name VARCHAR (255) UNIQUE NOT NULL, -- cannot have duplicate player names
     created_on TIMESTAMP DEFAULT NOW()
 );
 
@@ -74,7 +74,7 @@ VALUES
 	('Thepchaiya Un-Nooh'),
 	('John Higgins'),
 	('Stephen Hendry'),
-	('John Higgins'),
+	('Marco Fu'),
 	('Jack Lisowski'),
 	('Mark Allen'),
 	('Shaun Murphy');
