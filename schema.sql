@@ -27,11 +27,11 @@ CREATE TABLE teams (
 
 -- this table links players to corresponding teams (one player to many teams, over many seasons)
 -- each team may have a varying amount of players for them each season so this approach of a third table to relate them together makes more sense
--- (compared to one column inside each team's row that has a string you'd have to parse every time you want to access it)
+-- (compared to one "players" column inside each team's row that has a string you'd have to parse every time you want to access it)
 CREATE TABLE players_in_teams (
-    id SERIAL PRIMARY KEY,
     player_id INTEGER NOT NULL,
     team_id INTEGER NOT NULL,
+    PRIMARY KEY (player_id, team_id), -- force the combination of (player_id, team_id) to be unique and the primary key for this table
     FOREIGN KEY (player_id)
         REFERENCES players (player_id),
     FOREIGN KEY (team_id)
@@ -108,6 +108,25 @@ VALUES
 	('Cannington Ones', 1, 2020),
 	('Baby Sharks', 1, 2020),
 	('Breakers', 3, 2020);
+
+INSERT INTO players_in_teams (player_id, team_id)
+VALUES
+    (1, 1),
+    (2, 1), -- player with ID of 2 belongs to team with ID of 1
+    (3, 1),
+    (4, 1),
+    (5, 2),
+    (6, 2),
+    (7, 2),
+    (8, 2),
+    (9, 3),
+    (10, 3),
+    (11, 3),
+    (12, 3),
+    (13, 4),
+    (14, 4),
+    (15, 4),
+    (16, 4);
 
 INSERT INTO matches (match_date, home_team_id, away_team_id)
 VALUES
