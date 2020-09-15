@@ -30,6 +30,9 @@ CREATE TABLE teams (
 -- 	team_id
 -- )
 
+-- Jens: yeah, that makes sense, the api endpoint should still be /2000/:team/ though I'm guessing?
+-- Chris: yeah the endpoint should be like /:year/teams (like /2020/teams) or /:year/team/:id (like /2020/team/3)
+
 CREATE TABLE matches (
 	match_id SERIAL PRIMARY KEY,
 	match_date DATE NOT NULL, -- Postgres stores DATE in yyyy-mm-dd format
