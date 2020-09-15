@@ -101,6 +101,33 @@ VALUES
 	('2020-09-14', 1, 4), -- Jokers home team, Breakers away team
 	('2020-09-14', 2, 3); -- Cannington Ones home team, Baby Sharks away team
 
+INSERT INTO frames (match_id, player_one_id, player_two_id, player_one_broke, player_one_score, player_two_score, player_one_break, player_two_break)
+VALUES
+	(1, 1, 5, true, 50, 49, 0, 0),
+	(1, 1, 8, false, 33, 65, 0, 60),
+	(1, 1, 7, true, 49, 35, 23, 0),
+	(1, 2, 5, false, 85, 0, 85, 0),
+	(1, 2, 6, true, 39, 55, 25, 0),
+	(1, 2, 8, false, 99, 23, 60, 23),
+	(1, 3, 5, true, 11, 97, 0, 85),
+	(1, 3, 6, false, 66, 65, 55, 0),
+	(1, 3, 7, true, 30, 46, 0, 0),
+	(1, 4, 6, false, 29, 36, 0, 0),
+	(1, 4, 7, false, 147, 0, 147, 0),
+	(1, 4, 8, true, 59, 19, 40, 0),
+	
+	(2, 9, 13, true, 50, 49, 0, 0),
+	(2, 9, 16, false, 33, 65, 0, 60),
+	(2, 9, 15, true, 49, 35, 23, 0),
+	(2, 10, 13, false, 85, 0, 85, 0),
+	(2, 10, 14, true, 39, 55, 25, 0),
+	(2, 10, 16, false, 99, 23, 60, 23),
+	(2, 11, 13, true, 11, 97, 0, 85),
+	(2, 11, 14, false, 66, 65, 55, 0),
+	(2, 11, 15, true, 30, 46, 0, 0),
+	(2, 12, 14, false, 29, 36, 0, 0),
+	(2, 12, 15, false, 147, 0, 147, 0),
+	(2, 12, 16, true, 59, 19, 40, 0);
 
 
 
