@@ -8,3 +8,5 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // return team with id, current and past players
 });
+
+module.exports = router; // don't forget about this!

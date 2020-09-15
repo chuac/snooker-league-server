@@ -8,3 +8,5 @@ router.get('/table', async (req, res) => {
 router.get('/players', async (req, res) => {
   // return player statistics for that year
 });
+
+module.exports = router;
