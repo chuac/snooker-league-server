@@ -17,7 +17,19 @@ module.exports = {
     getAllPlayers: async () => {
         try {
             const query = `SELECT * FROM players;`
-            const [rows] = await pool.query(query);
+            const { rows } = await pool.query(query); // destructuring rows array out of the pool.query() result
+            console.log(rows);
+            return rows;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    },
+    getOnePlayer: async (id) => { // very basic implementation for now, will be better when more dummy data available
+        try {
+            const query = `SELECT * FROM players WHERE player_id = $1`;
+            const values = [id];
+            const { rows } = await pool.query(query, values);
             console.log(rows);
             return rows;
         } catch (error) {
