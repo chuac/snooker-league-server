@@ -2,7 +2,7 @@
 
 --\c snooker_league -- connect to snooker_league database
 
-DROP TABLE IF EXISTS players, teams, locations, matches, frames; -- drop "old" tables to create fresh ones again
+DROP TABLE IF EXISTS players, locations, teams, players_in_teams, matches, frames; -- drop "old" tables to create fresh ones again
 
 CREATE TABLE players (
     player_id SERIAL PRIMARY KEY,
@@ -23,6 +23,19 @@ CREATE TABLE teams (
 	year INT NOT NULL, -- for which year/season does this team belong to?
     FOREIGN KEY (home_id)
         REFERENCES locations (location_id)
+);
+
+-- this table links players to corresponding teams (one player to many teams, over many seasons)
+-- each team may have a varying amount of players for them each season so this approach of a third table to relate them together makes more sense
+-- (compared to one column inside each team's row that has a string you'd have to parse every time you want to access it)
+CREATE TABLE players_in_teams (
+    id SERIAL PRIMARY KEY,
+    player_id INTEGER NOT NULL,
+    team_id INTEGER NOT NULL,
+    FOREIGN KEY (player_id)
+        REFERENCES players (player_id),
+    FOREIGN KEY (team_id)
+        REFERENCES teams (team_id)
 );
 
 -- CREATE TABLE years ( -- do we need a years table? why not just reference a year in each relation?
