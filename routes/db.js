@@ -9,11 +9,11 @@ const pool = new Pool({
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: 'snooker_league',
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT || 5432 // the port specified in .env or default of 5432
 });
 
 module.exports = {
-    pool: pool, // to still be able to run other queries in other files, if needed
+    pool: pool, // to still be able to run unique queries in other files, if needed
     getAllPlayers: async () => {
         try {
             const query = `SELECT * FROM players;`
