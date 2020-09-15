@@ -20,7 +20,7 @@ CREATE TABLE teams (
 	team_id SERIAL PRIMARY KEY,
 	team_name VARCHAR (255) NOT NULL,
     home_id INTEGER NOT NULL, -- home location (id) for this team
-	year INT NOT NULL, -- for which year/season does this team belong to?
+	season INTEGER NOT NULL, -- for which year/season does this team belong to?
     FOREIGN KEY (home_id)
         REFERENCES locations (location_id)
 );
@@ -49,8 +49,12 @@ CREATE TABLE players_in_teams (
 CREATE TABLE matches (
 	match_id SERIAL PRIMARY KEY,
 	match_date DATE NOT NULL, -- Postgres stores DATE in yyyy-mm-dd format
+    season INTEGER NOT NULL, -- this column may not be required since we can get season from the home or away team's data
+    week SMALLINT NOT NULL, -- in which # week in the season was this match held
 	home_team_id INTEGER NOT NULL,
 	away_team_id INTEGER NOT NULL,
+    home_team_score SMALLINT, -- thinking of pre-computing their scores instead of counting frames (Win or Loss) every time we need this data
+    away_team_score SMALLINT,
 	FOREIGN KEY (home_team_id)
 		REFERENCES teams (team_id),
 	FOREIGN KEY (away_team_id)
@@ -102,7 +106,7 @@ VALUES
 	('Northbridge', 'NB'),
 	('North Perth', 'NP');
 
-INSERT INTO teams (team_name, home_id, year)
+INSERT INTO teams (team_name, home_id, season)
 VALUES
 	('Jokers', 2, 2020),
 	('Cannington Ones', 1, 2020),
@@ -128,10 +132,12 @@ VALUES
     (15, 4),
     (16, 4);
 
-INSERT INTO matches (match_date, home_team_id, away_team_id)
+INSERT INTO matches (match_date, season, week, home_team_id, away_team_id, home_team_score, away_team_score)
 VALUES
-	('2020-09-14', 1, 4), -- Jokers home team, Breakers away team
-	('2020-09-14', 2, 3); -- Cannington Ones home team, Baby Sharks away team
+	('2020-09-14', 2020, 1, 1, 4, 7, 5), -- Jokers home team, Breakers away team
+	('2020-09-14', 2020, 1, 2, 3, 3, 9), -- Cannington Ones home team, Baby Sharks away team
+	('2020-09-21', 2020, 2, 1, 3, 10, 2), -- TEST MATCH TO TEST QUERIES. NO CORRESPONDING FRAMES FOR THIS MATCH
+	('2020-09-21', 2020, 2, 2, 4, 4, 8); -- TEST MATCH TO TEST QUERIES. NO CORRESPONDING FRAMES FOR THIS MATCH
 
 INSERT INTO frames (match_id, player_one_id, player_two_id, player_one_broke, player_one_score, player_two_score, player_one_break, player_two_break)
 VALUES
