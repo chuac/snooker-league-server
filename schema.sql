@@ -97,7 +97,8 @@ VALUES
 	('Marco Fu'),
 	('Jack Lisowski'),
 	('Mark Allen'),
-	('Shaun Murphy');
+	('Shaun Murphy'),
+	('TEST PLAYER');
 	
 
 INSERT INTO locations (location_name, abbreviation)
@@ -113,7 +114,6 @@ VALUES
 	('Baby Sharks', 1, 2020),
 	('Breakers', 3, 2020),
 	('Jokers', 2, 2019); -- test team
-
 
 INSERT INTO players_in_teams (player_id, team_id)
 VALUES

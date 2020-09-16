@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { getLadderForSeason, getLadderForSeasonAndWeek } = require("../db");
+const {
+    getLadderForSeason,
+    getLadderForSeasonAndWeek,
+    getPlayersForSeason,   
+} = require("../db");
 
 router.get('/:season/table', async (req, res) => {
     // return UNSORTED league table for that year, currently an array of team objects with their for/against key/value pairs
@@ -27,8 +31,16 @@ router.get("/:season/:week/table", async (req, res) => {
     }
 });
 
-router.get('/players', async (req, res) => {
-    // return player statistics for that year
+router.get('/:season/players', async (req, res) => {
+    // return player statistics for that year (currently just their frames_for and frames_against)
+    const season = req.params.season;
+    try {
+        const rows = await getPlayersForSeason(season);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Something went wrong", error });
+    }
 });
 
 module.exports = router;

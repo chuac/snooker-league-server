@@ -77,7 +77,6 @@ SELECT team_name, ARRAY_AGG(season) AS seasons
 FROM teams
 GROUP BY team_name;
 
-
 -- return a team (by ID) and a list of their players (remembering that team IDs are unique for that season)
 SELECT
 	teams.team_name,
@@ -111,7 +110,66 @@ LEFT JOIN matches AS away
 WHERE teams.team_id = 1
 GROUP BY teams.team_id;
 
+-- return players & their data for a particular season. currently not working
+SELECT
+	players.player_name,
+	SUM(CASE
+		WHEN home.player_one_score > home.player_two_score THEN 1
+		WHEN away.player_two_score > away.player_one_score THEN 1
+		ELSE 0
+	END) AS frames_won,
+	SUM(CASE
+		WHEN home.player_one_score < home.player_two_score THEN 1
+		WHEN away.player_two_score < away.player_one_score THEN 1
+		ELSE 0
+	END) AS frames_lost
+FROM players
+LEFT JOIN frames AS home
+	ON players.player_id = home.player_one_id
+LEFT JOIN frames AS away
+	ON players.player_id = away.player_two_id
+INNER JOIN matches as home_matches
+	ON home.match_id = home_matches.match_id
+INNER JOIN matches as away_matches
+	ON away.match_id = away_matches.match_id
+WHERE (away_matches.season = 2020)
+GROUP BY players.player_id;
 
+-- small subquery to return frames only in a specific season. used this subquery below
+(SELECT frames.*
+FROM matches
+INNER JOIN frames
+	ON matches.match_id = frames.match_id
+WHERE matches.season = 2020);
 
+-- return players & their data for a particular season
+SELECT
+	players.player_name,
+	SUM(CASE
+		WHEN home.player_one_score > home.player_two_score THEN 1
+		WHEN away.player_two_score > away.player_one_score THEN 1
+		ELSE 0
+	END) AS frames_won,
+	SUM(CASE
+		WHEN home.player_one_score < home.player_two_score THEN 1
+		WHEN away.player_two_score < away.player_one_score THEN 1
+		ELSE 0
+	END) AS frames_lost
+FROM players
+LEFT JOIN 
+	(SELECT frames.*
+	FROM matches
+	INNER JOIN frames
+		ON matches.match_id = frames.match_id
+	WHERE matches.season = 2020) AS home
+	ON players.player_id = home.player_one_id
+LEFT JOIN
+	(SELECT frames.*
+	FROM matches
+	INNER JOIN frames
+		ON matches.match_id = frames.match_id
+	WHERE matches.season = 2020) AS away
+	ON players.player_id = away.player_two_id
+GROUP BY players.player_id;
 
 

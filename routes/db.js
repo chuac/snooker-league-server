@@ -87,6 +87,45 @@ module.exports = {
             return error;
         }
     },
+    getPlayersForSeason: async (season) => {
+        try {
+            const query = `
+                SELECT
+                    players.player_name,
+                    SUM(CASE
+                        WHEN home.player_one_score > home.player_two_score THEN 1
+                        WHEN away.player_two_score > away.player_one_score THEN 1
+                        ELSE 0
+                    END) AS frames_won,
+                    SUM(CASE
+                        WHEN home.player_one_score < home.player_two_score THEN 1
+                        WHEN away.player_two_score < away.player_one_score THEN 1
+                        ELSE 0
+                    END) AS frames_lost
+                FROM players
+                LEFT JOIN 
+                    (SELECT frames.*
+                    FROM matches
+                    INNER JOIN frames
+                        ON matches.match_id = frames.match_id
+                    WHERE matches.season = $1) AS home
+                    ON players.player_id = home.player_one_id
+                LEFT JOIN
+                    (SELECT frames.*
+                    FROM matches
+                    INNER JOIN frames
+                        ON matches.match_id = frames.match_id
+                    WHERE matches.season = $1) AS away
+                    ON players.player_id = away.player_two_id
+                GROUP BY players.player_id;`;
+            const values = [season];
+
+            const { rows } = await pool.query(query, values);
+            return rows;
+        } catch (error) {
+            return error;
+        }
+    },
 
     
 
