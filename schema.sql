@@ -112,7 +112,7 @@ VALUES
 	('Cannington Ones', 1, 2020),
 	('Baby Sharks', 1, 2020),
 	('Breakers', 3, 2020),
-	('Jokers', 2, 2019);
+	('Jokers', 2, 2019); -- test team
 
 INSERT INTO players_in_teams (player_id, team_id)
 VALUES

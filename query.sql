@@ -77,4 +77,39 @@ SELECT team_name, ARRAY_AGG(season) AS seasons
 FROM teams
 GROUP BY team_name;
 
+-- return a team (by ID) and a list of their players (remembering that team IDs are unique for that season)
+SELECT
+	teams.team_name,
+	teams.season,
+	MAX(locations.location_name) AS home_location, -- we use MAX() aggregate function here to bypass Postgres pedanticness
+	ARRAY_AGG(players.player_name) AS players
+FROM teams
+INNER JOIN players_in_teams
+	ON teams.team_id = players_in_teams.team_id
+INNER JOIN players
+	ON players_in_teams.player_id = players.player_id
+INNER JOIN locations
+	ON teams.home_id = locations.location_id
+LEFT JOIN matches AS home -- left join as that particular team may not always be the home team in that match but we still want to count their score
+	ON home.home_team_id = teams.team_id
+LEFT JOIN matches AS away -- as stated above, if that team isn't the home team, they'd have null values so now we're looking for when they were the away team to get their data
+	ON away.away_team_id = teams.team_id
+WHERE teams.team_id = 1
+GROUP BY teams.team_id;
+
+-- given a team ID, return that team's overall score (for and against)
+SELECT
+	teams.team_name,
+	COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
+	COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "against"
+FROM teams
+LEFT JOIN matches AS home
+	ON home.home_team_id = teams.team_id
+LEFT JOIN matches AS away
+	ON away.away_team_id = teams.team_id
+WHERE teams.team_id = 1
+GROUP BY teams.team_id;
+
+
+
 

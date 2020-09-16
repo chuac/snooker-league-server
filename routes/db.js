@@ -48,8 +48,8 @@ module.exports = {
             const query = `
                 SELECT
                     team_name,
-                    COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
-                    COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "against" --  double quotes for these column aliases because "for" may be a SQL keyword
+                    COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "frames_for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
+                    COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "frames_against" --  double quotes for these column aliases because "for" may be a SQL keyword
                 FROM teams
                 LEFT JOIN matches AS home -- left join as that particular team may not always be the home team in that match but we still want to count their score
                     ON home.home_team_id = teams.team_id
@@ -70,8 +70,8 @@ module.exports = {
             const query = `
                 SELECT
                     team_name,
-                    COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
-                    COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "against" --  double quotes for these column aliases because "for" may be a SQL keyword
+                    COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "frames_for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
+                    COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "frames_against" --  double quotes for these column aliases because "for" may be a SQL keyword
                 FROM teams
                 LEFT JOIN matches AS home -- left join as that particular team may not always be the home team in that match but we still want to count their score
                     ON home.home_team_id = teams.team_id
@@ -96,8 +96,55 @@ module.exports = {
             const query = `
                 SELECT team_name, ARRAY_AGG(season) AS seasons
                 FROM teams
-                GROUP BY team_name;`
+                GROUP BY team_name;`;
             const { rows } = await pool.query(query);
+            return rows;
+        } catch (error) {
+            return error;
+        }
+    },
+    getOneTeam: async (id) => {
+        try {
+            const query = `
+                SELECT
+                    teams.team_name,
+                    teams.season,
+                    MAX(locations.location_name) AS home_location, -- we use MAX() aggregate function here to bypass Postgres pedanticness
+                    ARRAY_AGG(players.player_name) AS players
+                FROM teams
+                INNER JOIN players_in_teams
+                    ON teams.team_id = players_in_teams.team_id
+                INNER JOIN players
+                    ON players_in_teams.player_id = players.player_id
+                INNER JOIN locations
+                    ON teams.home_id = locations.location_id
+                WHERE teams.team_id = $1
+                GROUP BY teams.team_id;`;
+            const values = [id];
+
+            const { rows } = await pool.query(query, values);
+            return rows;
+        } catch (error) {
+            return error;
+        }
+    },
+    getOneTeamScore: async (id) => {
+        try {
+            const query = `
+                SELECT
+                    teams.team_name,
+                    COALESCE(SUM(home.home_team_score), 0) + COALESCE(SUM(away.away_team_score), 0) AS "frames_for", -- COALESCE runs the first argument if it's not null, otherwise it uses the second argument (0)
+                    COALESCE(SUM(home.away_team_score), 0) + COALESCE(SUM(away.home_team_score), 0) AS "frames_against"
+                FROM teams
+                LEFT JOIN matches AS home
+                    ON home.home_team_id = teams.team_id
+                LEFT JOIN matches AS away
+                    ON away.away_team_id = teams.team_id
+                WHERE teams.team_id = $1
+                GROUP BY teams.team_id;`;
+            const values = [id];
+
+            const { rows } = await pool.query(query, values);
             return rows;
         } catch (error) {
             return error;
