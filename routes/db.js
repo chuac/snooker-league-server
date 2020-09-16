@@ -14,6 +14,8 @@ const pool = new Pool({
 
 module.exports = {
     pool: pool, // export pool to still be able to run unique queries in other files, if needed
+
+    // PLAYERS FUNCTIONS
     getAllPlayers: async () => {
         try {
             const query = `SELECT * FROM players;`
@@ -37,6 +39,10 @@ module.exports = {
             return error;
         }
     },
+
+
+
+    // SEASONS FUNCTIONS
     getLadderForSeason: async (season) => { // the query still contains lots of SQL comments, leaving them in there for now
         try {
             const query = `
@@ -76,6 +82,22 @@ module.exports = {
             const values = [season, week];
 
             const { rows } = await pool.query(query, values);
+            return rows;
+        } catch (error) {
+            return error;
+        }
+    },
+
+    
+
+    // TEAMS FUNCTIONS
+    getAllTeams: async () => {
+        try {
+            const query = `
+                SELECT team_name, ARRAY_AGG(season) AS seasons
+                FROM teams
+                GROUP BY team_name;`
+            const { rows } = await pool.query(query);
             return rows;
         } catch (error) {
             return error;

@@ -71,3 +71,10 @@ LEFT JOIN matches AS away -- as stated above, if that team isn't the home team, 
 	ON away.away_team_id = teams.team_id
 WHERE (home.week <= 1 OR away.week <= 1) AND (teams.season = 2020)
 GROUP BY teams.team_id;
+
+-- return list of ALL the teams and ALL the seasons they participated in, in an array
+SELECT team_name, ARRAY_AGG(season) AS seasons
+FROM teams
+GROUP BY team_name;
+
+
