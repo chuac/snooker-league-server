@@ -114,6 +114,7 @@ VALUES
 	('Breakers', 3, 2020),
 	('Jokers', 2, 2019); -- test team
 
+
 INSERT INTO players_in_teams (player_id, team_id)
 VALUES
     (1, 1),

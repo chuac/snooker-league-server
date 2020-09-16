@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+
 const { getAllTeams, getOneTeam, getOneTeamScore } = require("../db");
+
 
 router.get('/', async (req, res) => {
     // return list of teams, and all the years they participated in

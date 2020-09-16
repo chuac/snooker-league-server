@@ -77,6 +77,7 @@ SELECT team_name, ARRAY_AGG(season) AS seasons
 FROM teams
 GROUP BY team_name;
 
+
 -- return a team (by ID) and a list of their players (remembering that team IDs are unique for that season)
 SELECT
 	teams.team_name,
@@ -109,6 +110,7 @@ LEFT JOIN matches AS away
 	ON away.away_team_id = teams.team_id
 WHERE teams.team_id = 1
 GROUP BY teams.team_id;
+
 
 
 

@@ -97,6 +97,7 @@ module.exports = {
                 SELECT team_name, ARRAY_AGG(season) AS seasons
                 FROM teams
                 GROUP BY team_name;`;
+
             const { rows } = await pool.query(query);
             return rows;
         } catch (error) {
