@@ -4,3 +4,9 @@ sudo -i -u postgres	to swap to postgres account
 psql			to log into postgres promp
 \c snooker_league	to connect to "snooker_league" database
 \dt			to list schema tables
+
+
+
+/etc/postgresql/10/main/postgresql.conf
+
+/etc/postgresql/10/main/pg_hba.conf
