@@ -29,7 +29,7 @@ module.exports = {
     },
     getOnePlayer: async (id) => { // very basic implementation for now, will be better when more dummy data available
         try {
-            const query = `SELECT * FROM players WHERE player_id = $1`;
+            const query = `SELECT * FROM players WHERE player_id = $1;`;
             const values = [id];
             const { rows } = await pool.query(query, values);
             console.log(rows);
@@ -37,6 +37,16 @@ module.exports = {
         } catch (error) {
             console.log(error);
             return error;
+        }
+    },
+    addOnePlayer: async (player_name) => {
+        try {
+            const query = `INSERT INTO players(player_name) VALUES($1) RETURNING player_id;`;
+            const values = [player_name];
+            const { rows } = await pool.query(query, values); // rows will hold the RETURNING data
+            return rows[0]; // any info we got back from inserting should be available on one row
+        } catch (error) {
+            throw new Error(error); // throw Error object here instead of returning so it'll be caught in our routes
         }
     },
 
